@@ -1,6 +1,7 @@
 
 #include "dataStructures.h"
 //int xx;
+// don't operate on globals without a good reason
 void init()
 { 	
 	xx = 0;
@@ -111,7 +112,8 @@ void deleteVertexNode ( vertexNode* nodeA)
         		temp = iter;
         	}
         	if (searchEdge(iter,nodeA -> id))
-        	{   printf("Searched Vertex Node %d\n",iter->id);
+        	// don't hardwire in debuggin code with direct IO
+			{   printf("Searched Vertex Node %d\n",iter->id);
         		deleteEdgeAtoB(iter, nodeA);
         	}
         }
@@ -124,6 +126,7 @@ void deleteVertexNode ( vertexNode* nodeA)
 
 edgeNode * searchEdge(vertexNode* vnode, int id){
 	edgeNode* current = vnode->head;
+	// you can simplify this to while (current && current->id != id);
 	while(current){
 		if(current->id == id)
 			return current;
@@ -205,6 +208,7 @@ bool createVertexNode ()
     }
 }
 
+// make this more flexible by generating a string 
 void printList ()
 {
 vertexNode * iter;
