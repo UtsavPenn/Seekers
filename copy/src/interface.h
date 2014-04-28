@@ -8,3 +8,5 @@ struct param
 };
 
 typedef struct param param;
+extern param* res_params;
+void getParam(pathNode*);

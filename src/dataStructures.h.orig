@@ -5,10 +5,26 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+<<<<<<< HEAD
+// documentation! this is unreadable
+// You are cooking in a lot of assumptions that will make this code hard to reuse, 
+// e.g. that there is only one graph.
+
+// shouldn't be in a header
+int xx ;
+
+#define ASSIGN_ID() ((xx) = (xx) + 1)
+
+typedef enum{
+    false,
+    true} bool;
+
+=======
 /*    
     Orientation gives the direction of motion of the bot
     with respect to reference. 
 */
+>>>>>>> upstream/master
 typedef enum{
   Straight,
   Right,
@@ -20,10 +36,18 @@ typedef enum{
 Represents an edge between two nodes in the graph. For each node in the graph there is a list of edgeNodes which represent the nodes directly connected with that particular node.
 */
 struct edgeNode {
+<<<<<<< HEAD
+  struct edgeNode * next;
+  int id
+  // can this be negative?
+  int distance;
+  orientation turn;
+=======
   struct edgeNode * next; //pointer to the next node connected to the vertexNode 
   int id;                           //id of the node to which the vertexNode is connected to 
   int distance;                 //distance  from the node to the vertexNode 
   orientation turn;            //orientation of the node wrt the vertexNode
+>>>>>>> upstream/master
 };
 
 /*
@@ -36,14 +60,20 @@ struct edgeNode *head,*tail;    // Head and tail of the list of nodes to which a
 struct vertexNode *next; // Pointer to the next vertex node
 };
 
+// put these when you define the structs, not down here where they can get lost
 typedef struct edgeNode edgeNode;
 typedef struct vertexNode vertexNode;
 
+<<<<<<< HEAD
+// If you are writing embedded C code, don't take a dependence on the heap.
+// Instead, pass in a pointer to the memory will the node will be created
+=======
 /*
     Allocates a new node  in the graph.
     @return
     True if memory allocated successfully, false otherwise.
 */
+>>>>>>> upstream/master
 bool createVertexNode();
 
 /*
@@ -78,6 +108,11 @@ void deleteVertexNode(vertexNode *);
     Returns true if the adge is succesfully added and false otherwise.
 */
 bool addEdge(vertexNode *,vertexNode *, float, orientation, orientation);
+<<<<<<< HEAD
+vertexNode * search(int);
+edgeNode * searchEdge(vertexNode*, int );
+// init what? In C, use names that bind operations with the types or objects they operate on
+=======
 
 /*
     Searches a vertex node. 
@@ -109,12 +144,19 @@ void searchEdge(vertexNode*, int );
 /*
    allocates the first node in the graph and initialises its ID to 0
 */
+>>>>>>> upstream/master
 void init();
 
 /*
   prints out the entire graph with all the nodes along side the nodes that are directly connected to it.
 */
 void print();
+<<<<<<< HEAD
+void edgeInit(vertexNode *, edgeNode *)
+// shouldn't be in a header
+vertexNode *head;
+vertexNode *tail;
+=======
 
 /*
   Adds an edgenode to the list of edgeNodes of a vertexNode
@@ -130,4 +172,5 @@ vertexNode *tail;  // tail of the vertexNode List
 vertexNode *foundNode;
 edgeNode *foundEdge; //found edgeNode
 
+>>>>>>> upstream/master
 

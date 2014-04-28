@@ -4,10 +4,6 @@ int xx;
 
 #define ASSIGN_ID() ((xx) = (xx) + 1)
 
-vertexNode * head, * tail, * foundNode;
-edgeNode * foundEdge;
-
-
 edgeNode *n;
 
 void init()

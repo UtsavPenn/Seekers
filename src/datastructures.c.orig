@@ -1,5 +1,9 @@
 
 #include "dataStructures.h"
+<<<<<<< HEAD
+//int xx;
+// don't operate on globals without a good reason
+=======
 int xx;
 
 #define ASSIGN_ID() ((xx) = (xx) + 1)
@@ -10,6 +14,7 @@ edgeNode * foundEdge;
 
 edgeNode *n;
 
+>>>>>>> upstream/master
 void init()
 { 	
 	xx = 0;
@@ -127,9 +132,15 @@ void deleteVertexNode ( vertexNode* nodeA)
         	{
         		temp = iter;
         	}
+<<<<<<< HEAD
+        	if (searchEdge(iter,nodeA -> id))
+        	// don't hardwire in debuggin code with direct IO
+			{   printf("Searched Vertex Node %d\n",iter->id);
+=======
         	searchEdge(iter,nodeA -> id);
         	if (foundEdge)
         	{   printf("Searched Vertex Node %d\n",iter->id);
+>>>>>>> upstream/master
         		deleteEdgeAtoB(iter, nodeA);
         	}
         }
@@ -140,6 +151,15 @@ void deleteVertexNode ( vertexNode* nodeA)
     printf("Done.\n");
 }
 
+<<<<<<< HEAD
+edgeNode * searchEdge(vertexNode* vnode, int id){
+	edgeNode* current = vnode->head;
+	// you can simplify this to while (current && current->id != id);
+	while(current){
+		if(current->id == id)
+			return current;
+		current = current->next;
+=======
 
 void searchEdge(vertexNode* vnode, int id){
 	 foundEdge = vnode->head;
@@ -149,6 +169,7 @@ void searchEdge(vertexNode* vnode, int id){
 		if(foundEdge->id == id)
 			return ;
 		foundEdge = foundEdge->next;
+>>>>>>> upstream/master
 	}
 	
 }
@@ -226,6 +247,7 @@ bool createVertexNode ()
     }
 }
 
+// make this more flexible by generating a string 
 void printList ()
 {
 vertexNode * iter;

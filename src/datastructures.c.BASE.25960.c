@@ -1,15 +1,6 @@
 
 #include "dataStructures.h"
-int xx;
-
-#define ASSIGN_ID() ((xx) = (xx) + 1)
-
-vertexNode * head, * tail, * foundNode;
-edgeNode * foundEdge;
-
-
-edgeNode *n;
-
+//int xx;
 void init()
 { 	
 	xx = 0;
@@ -27,30 +18,24 @@ void init()
 
 
 */    
-vertexNode* searchNode(int nodeID){
-  search(nodeID);
-  return foundNode; 
-}
-
-void search(int nodeID)
+vertexNode *search(int nodeID)
 {
-    foundNode = head;
+    vertexNode *iter = head;
     if (nodeID > tail -> id)
     {
-        return ;
+        return NULL;
     }
     else if (nodeID == tail -> id)
     {
-        foundNode = tail;
-        return;
+        return tail;
     }
     else
     {
-        while (foundNode -> id != nodeID)
+        while (iter -> id != nodeID)
         {
-            foundNode = foundNode -> next;
+            iter = iter -> next;
         }
-     
+        return iter;
     }     
 } 
 
@@ -60,10 +45,8 @@ adds an edge between two vertex nodes
 */  
 bool addEdge(vertexNode* nodeA, vertexNode* nodeB, float distance, orientation turntoA, orientation turntoB ){
     edgeNode *EdgeAToB,*EdgeBToA;
-    createEdgeNode(nodeB->id);
-    EdgeAToB = foundEdge;
-    createEdgeNode(nodeA->id);
-    EdgeBToA = foundEdge;
+    EdgeAToB = createEdgeNode(nodeB->id);
+    EdgeBToA = createEdgeNode(nodeA->id);
     if (EdgeAToB == NULL || EdgeBToA == NULL)
       return false;
     edgeInit(nodeA,EdgeAToB);
@@ -127,8 +110,7 @@ void deleteVertexNode ( vertexNode* nodeA)
         	{
         		temp = iter;
         	}
-        	searchEdge(iter,nodeA -> id);
-        	if (foundEdge)
+        	if (searchEdge(iter,nodeA -> id))
         	{   printf("Searched Vertex Node %d\n",iter->id);
         		deleteEdgeAtoB(iter, nodeA);
         	}
@@ -140,17 +122,14 @@ void deleteVertexNode ( vertexNode* nodeA)
     printf("Done.\n");
 }
 
-
-void searchEdge(vertexNode* vnode, int id){
-	 foundEdge = vnode->head;
-	 //printf("%p\n",foundEdge);
-	 //printf("%d\t%d",foundEdge->id, id);
-	while(foundEdge){
-		if(foundEdge->id == id)
-			return ;
-		foundEdge = foundEdge->next;
+edgeNode * searchEdge(vertexNode* vnode, int id){
+	edgeNode* current = vnode->head;
+	while(current){
+		if(current->id == id)
+			return current;
+		current = current->next;
 	}
-	
+	return current;
 }
 /* @author Utsav 
 deletes all edges between two vertex nodes
@@ -195,14 +174,14 @@ void deleteEdgeAtoB(vertexNode* nodeA, vertexNode* nodeB){
 
 /* @author Shallav 
  */
-void createEdgeNode (int id)
+edgeNode * createEdgeNode (int id)
 {
-    n = (edgeNode *)malloc(sizeof(edgeNode));
+    edgeNode *n = (edgeNode *)malloc(sizeof(edgeNode));
     if ( n != NULL)
     {
         n -> id = id;
     }
-   foundEdge = n;
+    return n;
 }
 
 /* @author Shallav */ 
@@ -254,7 +233,7 @@ void print(){
 	}
 }
 
-/*
+
 int main()
 {
     init();
@@ -277,4 +256,4 @@ int main()
     deleteVertexNode (search(4));
     print();
     return 0;
-}*/
+}
