@@ -31,5 +31,4 @@ motor.o: motor.c /usr/include/stdio.h /usr/include/features.h \
  /usr/include/arm-linux-gnueabihf/bits/select.h \
  /usr/include/arm-linux-gnueabihf/bits/sigset.h \
  /usr/include/arm-linux-gnueabihf/sys/sysmacros.h /usr/include/alloca.h \
- motor.h dataStructures.h \
- /usr/lib/gcc/arm-linux-gnueabihf/4.6/include/stdbool.h
+ motor.h graph.h /usr/lib/gcc/arm-linux-gnueabihf/4.6/include/stdbool.h

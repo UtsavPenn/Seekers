@@ -1,3 +1,9 @@
+/*
+  1. Creates a graph structure representing the environment.
+  2. Move the bot in a given direction for given amount of time.
+  @Author: Utsav Mehta and Shallav Varma
+*/
+
 #include <stdio.h>
 #include <bcm2835.h>
 #include <time.h>
@@ -7,12 +13,8 @@
 #include <sys/types.h>
 #include "motor.h"
 
-#define FORWARD 1
-#define RIGHT 2
-#define LEFT 3
 #define MOTORA RPI_GPIO_P1_12
 #define MOTORB RPI_GPIO_P1_11
-
 
 extern orientation lastTurn;
 
@@ -23,23 +25,22 @@ struct motor_params{
 
 struct motor_params motorleft,motorright;
 
-//pathNode *headList;
-//extern param* res_params;
-//extern int endofList;
-
+/*
+  It creates the graph structure using Graph API.
+*/
 void run ()
-{   init();
+{   
+  init();
 	lastTurn = Straight;
-   // endofList = 0;
-    // memory allocation for recieved parameters from graph to drive the bot
-    //res_params = (param*) malloc(sizeof(param)); 
     int i = 0;
+    // Creates a linked list with number of nodes = number of times the loop executes.
     while(i<9){
     
         createVertexNode();
         
         i++;
     }
+    // Adding edges between various nodes of graph.
     addEdge(searchNode(0),searchNode(1), 3, Left, Right );
     addEdge(searchNode(1),searchNode(2), 3, Left, Right );
     addEdge(searchNode(2),searchNode(5), 3, Back, Straight );
@@ -56,6 +57,10 @@ void run ()
    //print();
   }
 
+/* 
+  Initialize the left and the right motors by setting the 
+  corresponding GPIO pins as outputs.
+*/
 void init_motors(){
    motorleft.pin = MOTORA;
    motorright.pin = MOTORB;
@@ -66,6 +71,9 @@ void init_motors(){
   bcm2835_gpio_fsel(MOTORB, BCM2835_GPIO_FSEL_OUTP);
 }
 
+/*
+  The driver for motors.
+*/
 void *drivemotors(void *arg){
 
  struct  motor_params* motor = (struct motor_params*)arg;
@@ -80,17 +88,22 @@ void *drivemotors(void *arg){
   } 
 }
 
-void driveStraight(int distance){
+/*
+  Runs the bot in straight direction for a given amount of time.
+  @args
+  time : time for which bot should drive straight. 
+*/
+void driveStraight(int timer){
   printf("Going Straight\n");
   pthread_t lth ,rth;
   motorright.duty = 3.75;
   motorleft.duty = 11.25;
   
-  //starting motor thread   
+  //Starting motor threads   
   pthread_create(&rth,NULL,drivemotors,(void*)&motorright);
   pthread_create(&lth,NULL,drivemotors,(void*)&motorleft);
-	printf("Threads created in drive straight.: %d \n",distance);  
-  sleep(distance);
+	printf("Threads created in drive straight.: %d \n",timer);  
+  sleep(timer);
   
   pthread_cancel(rth);
   pthread_cancel(lth);
@@ -99,7 +112,10 @@ void driveStraight(int distance){
 	printf("Threads cancelled in drive straight. \n");  
 }
 
-void turnRight(int distance){
+/*
+  Rotates the bot in right direction.
+*/
+void turnRight(){
   printf("Turning Right\n");
   pthread_t lth ,rth;
   motorright.duty = 7.25;
@@ -109,36 +125,37 @@ void turnRight(int distance){
   pthread_create(&lth,NULL,drivemotors,(void*)&motorleft);
   
   usleep(1370000);
-//	sleep(1);
   
   pthread_cancel(rth);
   pthread_cancel(lth);
   pthread_join(rth,NULL);
   pthread_join(lth,NULL);
   
- // driveStraight(distance);
-  
 }
 
-void turnLeft(int distance){
+/*
+  Rotates the bot in left direction.
+*/
+void turnLeft(){
   printf("Turning Left\n");
   pthread_t lth ,rth;
-  motorright.duty =7.25;// 3.75;
-  motorleft.duty = 3.75;//7.25;
+  motorright.duty =7.25;
+  motorleft.duty = 3.75;
   
   pthread_create(&rth,NULL,drivemotors,(void*)&motorright);
   pthread_create(&lth,NULL,drivemotors,(void*)&motorleft);
   
   usleep(1370000);
- // sleep(1);
   pthread_cancel(rth);
   pthread_cancel(lth);
   pthread_join(rth,NULL);
   pthread_join(lth,NULL);
   
- // driveStraight(distance);
 }
 
+/*
+  Rotates the bot 360 degrees.
+*/
 void rotate360(){
    pthread_t lth ,rth;
   motorright.duty = 7.25;
@@ -156,24 +173,27 @@ void rotate360(){
    
 }
 
-void orient(int x)
+/*
+  Orients the bot wrt reference direction.
+*/
+void orient()
 {
 	printf("\n Orienting itself.: %d \n",lastTurn); 
       sleep(1);
       switch(lastTurn)
       {
               case Right:
-                      turnLeft(x);
+                      turnLeft();
                       sleep(1);
                       break;
               case Back:
-                      turnRight(x);
-			sleep(1);
-                      turnRight(x);
+                      turnRight();
+			                sleep(1);
+                      turnRight();
                       sleep(1);
                       break;
               case Left:
-                      turnRight(x);
+                      turnRight();
                       sleep(1);
                       break;
               default:
@@ -181,33 +201,36 @@ void orient(int x)
       }
 }
 
-
-void moveCar(orientation direction, int distance){
-  orient(distance); 
+/*
+  Bot moves in the given direction for a given amount of time.  
+*/
+void moveCar(orientation direction, int timer){
+  // Pre - condition: Bot can face in any direction.
+  orient(); 
+  // Bot faces in the reference direction here.
   switch(direction){
   	case Straight:
-  	  driveStraight(distance);
+  	  driveStraight(timer);
   	break;
   	case Right:
-  	  turnRight(distance);
-	driveStraight(distance);
+  	  turnRight();
+	driveStraight(timer);
   	break;
   	case Left:
-  	  turnLeft(distance);
-	driveStraight(distance);
+  	  turnLeft();
+	driveStraight(timer);
   	break;
 	case Back:
-		turnRight(distance);
+		turnRight();
 		sleep(1);
-		turnRight(distance);
-		driveStraight(distance);
+		turnRight();
+		driveStraight(timer);
 		break;
   	default:
   	  motorright.duty = 7.25;
   	  motorleft.duty = 7.25;
   	  break; 
   }
-  //bcm2835_close();
   return ;
 }
 

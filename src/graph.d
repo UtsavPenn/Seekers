@@ -1,4 +1,4 @@
-dfs.o: dfs.c motor.h graph.h /usr/include/stdio.h /usr/include/features.h \
+graph.o: graph.c graph.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/arm-linux-gnueabihf/bits/predefs.h \
  /usr/include/arm-linux-gnueabihf/sys/cdefs.h \
  /usr/include/arm-linux-gnueabihf/bits/wordsize.h \
@@ -22,5 +22,4 @@ dfs.o: dfs.c motor.h graph.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/arm-linux-gnueabihf/sys/sysmacros.h \
  /usr/include/arm-linux-gnueabihf/bits/pthreadtypes.h \
  /usr/include/alloca.h \
- /usr/lib/gcc/arm-linux-gnueabihf/4.6/include/stdbool.h dfs.h set.h \
- /usr/include/string.h stack.h init.h
+ /usr/lib/gcc/arm-linux-gnueabihf/4.6/include/stdbool.h
