@@ -1,4 +1,4 @@
-/*
+g/*
   1. Creates a graph structure representing the environment.
   2. Move the bot in a given direction for given amount of time.
   @Author: Utsav Mehta and Shallav Varma
@@ -24,6 +24,9 @@ struct motor_params{
   };
 
 struct motor_params motorleft,motorright;
+
+// if the purpose of the function is to create a graph, it should be a function returning a graph
+// program what you mean
 
 /*
   It creates the graph structure using Graph API.

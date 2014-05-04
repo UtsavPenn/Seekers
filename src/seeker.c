@@ -5,7 +5,7 @@
 #include <pthread.h>
 #include "init.h"
 
-
+// why returning a void*? for that matter, why are you defining these functions at all?
 void *objectDetect(void *arg)
 {
 	
@@ -13,7 +13,7 @@ void *objectDetect(void *arg)
 	//return;
 }
 
-
+// why are you returning a void* ?
 void *objectSearch(void *arg)
 {
     	startSearch();
@@ -28,7 +28,7 @@ void errorDisp(int x)
      	}
 	//return;
 }
-
+// why aren't you using C++11 threads instead?
 int main()
 {
 	pthread_t threads[2];
