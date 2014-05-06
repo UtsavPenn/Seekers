@@ -1,7 +1,8 @@
 #include "stack.h"
 
 #define btoa(isStackEmpty) ((isStackEmpty)?"true":"false")
-
+// there is no reason to initialize the data in the stack
+// use half-open intervals for data structures, i.e. tos==0 should indicate an empty stack
 void initStack(stack * stackHead){
 	stackHead->tos =-1;
 	for(int i=0;i<CAPACITY;i++){

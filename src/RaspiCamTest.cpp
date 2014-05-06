@@ -27,6 +27,8 @@
 
 using namespace cv;				//OpenCV namespace
 
+// get rid of your globals
+
 #define RIGHT_THRESHOLD (500)	// Horizontal axis threshold for detecting object last went right
 #define LEFT_THRESHOLD	(100)	// Horizontal axis threshold for detecting object last went left
 

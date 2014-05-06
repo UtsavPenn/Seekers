@@ -1,5 +1,7 @@
 #include "set.h"
 
+// I find this code hard to understand, which shouldn't be the case for a simple set implementation
+// why is head called head?
 void addToSet(set ** head, int ID){
 
 	//check if the node exists, don't add
@@ -39,7 +41,8 @@ void addToLinkedList(set ** setHead, graph_node * head, int ID){
 /**
  * prints out the list of nodes in the list
  */
-
+// bad name
+// bad choice of interface
 void listLinkedList(graph_node * head){
 
 	
@@ -55,7 +58,7 @@ void listLinkedList(graph_node * head){
 	}
 }
 
-
+// why would you have to deal with null set (as opposed to an empty set)?
 void listSet(set * head){
 
 	if(head == NULL)
