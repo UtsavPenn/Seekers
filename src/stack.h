@@ -15,3 +15,4 @@ int pop(stack *);
 void push(stack * , int);
 bool isStackEmpty(stack *);
 void printStack(stack *);
+void clearStack(stack *);

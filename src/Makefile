@@ -2,7 +2,7 @@ CFLAGS=-lbcm2835 -pthread
 CFLAGS_OPENCV = -I/usr/include/opencv
 LDFLAGS2_OPENCV = -lopencv_highgui -lopencv_core -lopencv_legacy -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_imgproc
 
-DEPS = dfs.h graph.h init.h set.h stack.h
+DEPS = dfs.h graph.h init.h set.h stack.h setGraph.h
 
 USERLAND_ROOT = /opt/vc/userland-master
 CFLAGS_PI = \
@@ -19,7 +19,7 @@ LDFLAGS_PI = -L$(USERLAND_ROOT)/build/lib -lmmal_core -lmmal -l mmal_util -lvcos
 BUILD_TYPE=debug
 #BUILD_TYPE=release
 
-CFLAGS_COMMON = -Wno-multichar -g $(CFLAGS_OPENCV) $(CFLAGS_PI) -MD
+CFLAGS_COMMON = -g -fpermissive $(CFLAGS_OPENCV) $(CFLAGS_PI) -MD
 
 ifeq ($(BUILD_TYPE), debug)
 	CFLAGS = $(CFLAGS_COMMON)
@@ -41,7 +41,7 @@ all: seeker
 RaspiCamTest.o: 
 	g++ -c $(CFLAGS) RaspiCamTest.cpp -o RaspiCamTest.o
 
-seeker: RaspiCamTest.o motor.o graph.o seeker.o dfs.o setNew.o stack.o
+seeker: RaspiCamTest.o motor.o graph.o seeker.o dfs.o setNew.o stack.o setGraph.o
 	g++ $(LDFLAGS) $+ $(LDFLAGS2) $(CFLAGS) -L. -lraspicamcv -lbcm2835 -o $@
 
 

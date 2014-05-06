@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#define MAXNODES 10
+#define MAXNODES 20
 
-typedef struct node {
+typedef struct node_s{
 	int ID;
-	struct node * next; // a pointer to the next node
+	struct node_s * next; // a pointer to the next node
 } graph_node;
 
 typedef struct SET{
-	struct node * listHead; //points to the first element of the list
+	struct node_s * listHead; //points to the first element of the list
 } set;
+
+
 
 void addToSet(set **, int ID);
 void listSet(set *);

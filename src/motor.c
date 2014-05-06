@@ -16,6 +16,8 @@
 #define MOTORA RPI_GPIO_P1_12
 #define MOTORB RPI_GPIO_P1_11
 
+graph area;
+
 extern orientation lastTurn;
 
 struct motor_params{
@@ -29,32 +31,33 @@ struct motor_params motorleft,motorright;
   It creates the graph structure using Graph API.
 */
 void run ()
-{   
-  init();
+{
 	lastTurn = Straight;
     int i = 0;
     // Creates a linked list with number of nodes = number of times the loop executes.
-    while(i<9){
-    
-        createVertexNode();
-        
+  
+    graphInit(&area);
+    while(i < 9)
+    {
+        area.addNode(&area);
         i++;
     }
     // Adding edges between various nodes of graph.
-    addEdge(searchNode(0),searchNode(1), 3, Left, Right );
-    addEdge(searchNode(1),searchNode(2), 3, Left, Right );
-    addEdge(searchNode(2),searchNode(5), 3, Back, Straight );
-    addEdge(searchNode(5),searchNode(4), 3, Right, Left );
-    addEdge(searchNode(4),searchNode(3), 3, Right, Left );
-    addEdge(searchNode(1),searchNode(4), 3, Back, Straight );
-    addEdge(searchNode(0),searchNode(3), 3, Back, Straight );
-    addEdge(searchNode(3),searchNode(6), 3, Back, Straight );
-	addEdge(searchNode(6),searchNode(7), 3, Left, Right );
-	addEdge(searchNode(7),searchNode(8), 3, Left, Right );
-	addEdge(searchNode(4),searchNode(7), 3, Back, Straight );
-	addEdge(searchNode(5),searchNode(8), 3, Back, Straight );    
+    area.addEdge(&area, 0, 1, 3, Right);
+    area.addEdge(&area, 1, 2, 3, Right);
+    area.addEdge(&area, 2, 5, 3, Straight);
+    area.addEdge(&area, 5, 4, 3, Left);
+    area.addEdge(&area, 4, 3, 3, Left);
+    area.addEdge(&area, 1, 4, 3, Straight);
+    area.addEdge(&area, 0, 3, 3, Straight);
+    area.addEdge(&area, 3, 6, 3, Straight);
+    area.addEdge(&area, 6, 7, 3, Right);
+    area.addEdge(&area, 7, 8, 3, Right);
+    area.addEdge(&area, 4, 7, 3, Straight);
+    area.addEdge(&area, 5, 8, 3, Straight);
+
+    print(&area);
     
-   //print();
   }
 
 /* 
@@ -102,7 +105,7 @@ void driveStraight(int timer){
   //Starting motor threads   
   pthread_create(&rth,NULL,drivemotors,(void*)&motorright);
   pthread_create(&lth,NULL,drivemotors,(void*)&motorleft);
-	printf("Threads created in drive straight.: %d \n",timer);  
+    printf("Threads created in drive straight.: %d \n",timer);  
   sleep(timer);
   
   pthread_cancel(rth);

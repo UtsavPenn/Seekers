@@ -30,7 +30,7 @@ void addToLinkedList(set ** setHead, graph_node * head, int ID){
 	while(current->next != NULL){//traverse till the end of the list
 		current = current->next;
 	}
-	current->next = (node*)malloc(sizeof(graph_node));
+	current->next = (node_s*)malloc(sizeof(graph_node));
 	current->next->ID = ID;
 	current->next->next = NULL;
 	(*setHead)->listHead = head;

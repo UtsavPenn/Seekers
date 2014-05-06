@@ -5,10 +5,12 @@
 
 
 extern bool objectFound;               //From opencv
+extern graph area;
 
-orientation lastTurn;                          
+orientation currentOrientation;                          
 orientation lastPostionSeen = Straight;     
 
+orientation lastTurn;
 
 int distanceToNextNode; //Distance to be travelled to the next node
 
@@ -36,11 +38,11 @@ void init_Dfs()
 */
 
 void addNeigbourNodesToFrontier(int id){
-    vertexNode* v = searchNode(id);
+  node* v = findNode(&area,id);
     //Found the vertex node
 
     //Create a temp head edgeNode
-    edgeNode* temp_head = v->head; 
+    edge* temp_head = v->edges -> listHead; 
     while(temp_head!=NULL)  //Traverse and add all ids into the frontier
     {
 
@@ -48,8 +50,8 @@ void addNeigbourNodesToFrontier(int id){
             frontierNodes.insert(temp_head->id);
         */
           //change
-        if(setContains(markedNodes,temp_head->id) == 0)
-            addToSet(&frontierNodes,temp_head->id);
+        if(setContains(markedNodes,temp_head->dest-> id) == 0)
+            addToSet(&frontierNodes,temp_head->dest->id);
         
         temp_head = temp_head-> next;
     }
@@ -67,13 +69,14 @@ void addNeigbourNodesToFrontier(int id){
 
 int DecideNextNode(int currentNodeID){
 
-    vertexNode* v = searchNode(currentNodeID);
+    node* v = findNode(&area,currentNodeID);
     //Found the vertex node
 
-    //Create a temp head edgeNode
-    edgeNode* temp_head = v->head; 
+    //Create a temp head edge
+    //Set of edges at node v
+    edge* temp_head = v-> edges -> listHead; 
     
-    if(lastPostionSeen ==Left)
+    /*    if(lastPostionSeen ==Left)
     {
 
         while(temp_head!=NULL)  //Traverse the edge nodes and check if the id matches
@@ -104,22 +107,22 @@ int DecideNextNode(int currentNodeID){
 
     else
     {
-
-        while(temp_head!=NULL)  //Traverse the edge nodes and check if the id matches
-                                // and return true
+    */
+        while(temp_head!=NULL)  
+                                
         {
         /*    if(markedNodes.find(temp_head->id) !=markedNodes.end())
                 return temp_head->id;
         */
-           if(setContains(markedNodes,temp_head->id) == 0)
+           if(setContains(markedNodes,temp_head->dest ->id) == 0)
             {
-                return temp_head->id;
+                return temp_head->dest->id;
             }
         
             temp_head = temp_head->next;
         }
 
-    }  
+    
 
     return 0;  
 }
@@ -134,15 +137,15 @@ int DecideNextNode(int currentNodeID){
 
 void moveToNextNode(int currentNodeID ,int nextNodeID)    //Decides on which  node to move to
 {
-    vertexNode* v = searchNode(currentNodeID);
+    node* v = findNode(&area,currentNodeID);
     //Found the vertex node
-    //Create a temp head edgeNode
+    //Create a temp head edge
 
-    edgeNode* temp_head = v->head; 
+    edge* temp_head = v -> edges -> listHead; 
     orientation direction ;
     while(temp_head!=NULL) 
     {
-        if(temp_head-> id == nextNodeID){
+        if(temp_head-> dest -> id == nextNodeID){
             direction = temp_head->turn;
             //lastTurn = direction;
 		//lastPositionSeen = lastTurn;
@@ -154,13 +157,8 @@ void moveToNextNode(int currentNodeID ,int nextNodeID)    //Decides on which  no
     }   
 
     moveCar(direction, distanceToNextNode);
-	lastTurn  = direction;
+    lastTurn  = direction;
     printf("Node explored : %d \n", currentNodeID);
-    // Rotate based on current orientation 
-    // Set the timers
-
-    // Actuate Motors
-    // Keep updating currentDistanceTravelled
 
 }
 
@@ -171,11 +169,11 @@ void moveToNextNode(int currentNodeID ,int nextNodeID)    //Decides on which  no
 */
 int checkIfNeighborExistsInFrontier(int nodeID) 
 {
-    vertexNode* v = searchNode(nodeID);
+    node* v = findNode(&area,nodeID);
     //Found the vertex node
 
     //Create a temp head edgeNode
-    edgeNode* temp_head = v->head; 
+    edge* temp_head = v->edges-> listHead; 
 
     while(temp_head!=NULL)  //Traverse the edge nodes and check if the id matches
                             // and return true
@@ -184,7 +182,7 @@ int checkIfNeighborExistsInFrontier(int nodeID)
         if(frontierNodes.find(temp_head->id) != frontierNodes.end())
             return 1;
        */
-        if(setContains(frontierNodes,temp_head->id) == 1)
+        if(setContains(frontierNodes,temp_head->dest->id) == 1)
             return 1;
             
         temp_head = temp_head-> next;
@@ -193,49 +191,137 @@ int checkIfNeighborExistsInFrontier(int nodeID)
 
 }
 
+
+
+
+
+int findNextNode(orientation currentOrienation, int nodeID)
+{
+  // Find the vertex node
+  int foundID;
+  node* v = findNode(&area,nodeID);
+  edge* temp_head = v-> edges -> listHead;
+
+  orientation direction ;
+   
+  while(temp_head!=NULL) 
+    {
+      if(temp_head-> dest->id == nodeID){
+	direction = temp_head->turn;
+	//lastTurn = direction;
+	//lastPositionSeen = lastTurn;
+	distanceToNextNode = temp_head->timer;
+	break;
+      }
+
+      temp_head = temp_head->next;
+    }   
+  
+      
+      return foundID;
+}
+
+
 void startSearch()
 {
+    bool flag;
     int currentNodeID = 0;  //Current node while starting is 0
+    bool objLostFlag;
+   int turnsTaken;    
 
+    bool dfsRunning = false;
+    
+    currentOrientation = Straight;
 
     init_Dfs();         //Initialize the stack spine
     init_motors();      
     run();
 
     int nextNodeID;
-    addNeigbourNodesToFrontier(currentNodeID);
-    addToSet(&markedNodes,currentNodeID);  
-    push(&spine, currentNodeID);
-    nextNodeID = DecideNextNode(currentNodeID);
     int cnt = 0;
+	
+	printf("here2\n");
 while(1)
 {
-    //scanAndSearch();    //openCV code 
+    //scanAndSearch();    
+	printf("here3\n");
     
+
     if(objectFound == true)
     {
-        // Functionality here TBD 
-
+      // empty the DFS Sets and set dfsRunning to false;
+      
+      clearSet(&frontierNodes);
+      clearSet(&markedNodes);
+      clearStack(&spine);
+      
+      // Given currentNodeID find , find next node with my current orientation
+      nextNodeID = findNextNode(currentOrientation,currentNodeID);
+      
+      // move to next node
+      
+      moveToNextNode(currentNodeID, nextNodeID);
+      currentNodeID = nextNodeID;
+      
+      
+      /********** ********************
     	printf("Obj found: %d",cnt);
 	    cnt ++;
 	    rotate360();
     	objectFound = false;	
-
-       /* while(isObjectClose() == 0)
-           moveForward(); // Provided by the motor library
-    
-            if(distanceTravelledFromPrevNode == distanceToNextNode)
-                addToSet(&markedNodes,currentNodeID);
-           //?? Who updates the current position of the object
-	*/
-        //Keep track of the distance so that obj position is known
-        //Keep track of where we are in the graph
+      ********************************/
 
     }
     else
     {
-        
-  
+      turnsTaken = 4;
+      while(turnsTaken >0 )
+	{
+	  
+	  turnRight();       // Turn 90 and check for obj	  
+
+	 switch( currentOrientation)
+	{
+	case Straight:
+		currentOrientation = Right;
+		break;
+        case Right:
+                currentOrientation = Back;
+                break;
+        case Back:
+                currentOrientation = Left;
+                break;
+        case Left:
+                currentOrientation = Straight;
+                break;
+
+
+	}
+	  
+	  // scan and search
+
+	  if(objectFound == true){
+	    flag = true;
+	    break;	 
+	  }
+	  turnsTaken--;
+	}
+      
+      if(flag == true){
+	continue;
+	flag = false;
+      }
+
+      if(!dfsRunning)
+	{
+	      addNeigbourNodesToFrontier(currentNodeID);
+	      addToSet(&markedNodes,currentNodeID);  
+	      push(&spine, currentNodeID);
+	      nextNodeID = DecideNextNode(currentNodeID);
+	      objLostFlag = true;
+	}
+
+
         printf("Spine. \n");
         printStack(&spine);
         printf("\n\n");
@@ -276,8 +362,4 @@ while(1)
         
 }
 }
-
-
-
-
 

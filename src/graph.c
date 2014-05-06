@@ -1,68 +1,122 @@
 /*
     @author: Shallav Varma and Utsav Mehta
     GRAPH API: Methods available
-    1.  Create a node: createVertexNode()
-    2.  Add edge between two nodes: addEdge(vertexNode*, vertexNode*, float, orientation, orientation)
-    3.  Search a Node in a graph: searchNode(int nodeID)
-    4.  Delete an edge between two nodes: deleteEdge(vertexNode*, vertexNode*)
-    5.  Delete a node: deleteVertexNode(vertexNode *)
-    6.  Print the entire graph structure: print()
+    1.  Create a graph object: graphInit(graph *)
+    2.  Create a node: addNode(graph *)
+    3.  Add edge between two nodes: addEdge(graph *, int, int, int, orientation)
+    4.  Search a Node in a graph: findNode(graph *, int nodeID)
+    5.  Delete an edge between two nodes: deleteEdge(graph *, node*, node*)
+    6.  Delete a node: deleteNode(graph *, node *)
+    7.  Print the entire graph structure: print(graph *)
 */
 
 #include "graph.h"
-int xx;
-
-// Used to assign a unique id to each node.
-#define ASSIGN_ID() ((xx) = (xx) + 1)
-
-vertexNode * head, * tail, * foundNode;
-edgeNode * foundEdge;
-
-
-edgeNode *n;
+//graph area;
 
 /*
-    Initializes the graph structure by creating a head node.
+    Initializes a graph object.
 */
-void init()
-{ 	
-	xx = 0;
-	head = (vertexNode *)malloc(sizeof(vertexNode));
-	head->id = xx;
-	head->next = NULL;
-	head -> head = NULL;
-	head -> tail = NULL;
-	tail = head;
-}
-
- 
-/*
-    Search a node of a certain ID and returns pointer to that node.
-    @author Shallav 
-*/    
-vertexNode* searchNode(int nodeID){
-  search(nodeID);
-  return foundNode; 
-}
-
-/*
-    Search a node of a given node ID.
-    Helper to searchNode.
-    foundNode contains the pointer to the found node. If not found, 
-    foundNode contains NULL.
-*/
-void search(int nodeID)
+void graphInit(graph * area)
 {
-    foundNode = head;
-    if (nodeID > tail -> id)
+    // Point all the functions in the graph strucuture to appropriate function definitons. 
+    area -> addNode = &addNode;
+    area -> addEdge = &addEdge;
+    area -> deleteEdge = &deleteEdge;
+    area -> deleteNode = &deleteNode;
+    area -> findNode = &findNode;
+    
+    // Malloc of graph required when compiling with g++, not gcc, despite of declaring area as global.
+    area -> head = (node*)malloc(sizeof(node));
+    area -> tail = (node*)malloc(sizeof(node));
+    
+    //Malloc graph head.
+    area -> head -> edges = (edgeSet*)malloc(sizeof(edgeSet));
+    area -> head = (node *)malloc(sizeof(node));
+    area -> head -> id = 0 ;
+    area -> head -> next = NULL;
+    area -> tail = area -> head;
+}
+ 
+
+/*
+    Creates a node.
+*/ 
+void addNode (graph * area)
+{
+    node *n = (node *)malloc(sizeof(node));
+    edgeSet *edges = (edgeSet*)malloc(sizeof(edgeSet));
+    static int x = 0;
+    n -> id = ++x;
+    n -> edges = edges;
+    n -> edges -> listHead = NULL;
+    n -> next = NULL;
+    area -> tail -> next = n;
+    area -> tail = n;
+        
+}
+
+/*
+    Adds an edge between two nodes.
+    @params
+    timer : time to traverse path between nodes.
+    direction: direction from node1 to node2.
+*/  
+void addEdge(graph * area, int nodeId1, int nodeId2, int timer,orientation direction ){
+    edge *EdgeAToB,*EdgeBToA;
+    node * node1 = findNode(area, nodeId1);
+    node * node2 = findNode(area, nodeId2);    
+
+    EdgeAToB = createEdge();
+    EdgeAToB -> dest = node2;
+    EdgeAToB -> timer = timer;
+    EdgeAToB -> turn = direction;
+    addToSet_graph (&(node1 -> edges),EdgeAToB);
+
+    switch(direction)
+    {
+        case Straight : direction = Back; break;
+        case Back : direction = Straight; break;
+        case Right : direction = Left; break;
+        case Left : direction = Right; break;
+        default: break;
+    }
+
+    EdgeBToA = createEdge();
+    EdgeBToA -> dest = node1;
+    EdgeBToA -> timer = timer;
+    EdgeBToA -> turn = direction;
+    addToSet_graph (&(node2 -> edges),EdgeBToA);
+}
+
+
+/*
+    Mallocs an edge.
+*/
+edge * createEdge ()
+{
+    edge * n;
+    n = (edge *)malloc(sizeof(edge));
+    if ( n != NULL)
+    {
+        return n;
+    }
+    return NULL;
+}
+
+/*
+    Search a node of a given node ID
+    and return pointer to the node.
+*/
+node * findNode(graph * area, int nodeID)
+{
+    node * foundNode = area -> head;
+    if (nodeID > area -> tail -> id)
     {
         foundNode = NULL;
-        return ;
     }
-    else if (nodeID == tail -> id)
+    else if (nodeID == area -> tail -> id)
     {
-        foundNode = tail;
-        return;
+        foundNode = area -> tail;
     }
     else
     {
@@ -71,87 +125,29 @@ void search(int nodeID)
             foundNode = foundNode -> next;
         }
      
-    }     
+    }  
+    return foundNode;   
 } 
 
-
 /*
-    @author Utsav 
-    Adds an edge between two vertex nodes.
-    @params
-    timer : time to traverse path between nodes.
-    turnToA: direction in which bot moves when going from node B to node A.
-    turnToB: direction in which bot moves when going from node A to node B.
-*/  
-bool addEdge(vertexNode* nodeA, vertexNode* nodeB, float timer, orientation turntoA, orientation turntoB ){
-    edgeNode *EdgeAToB,*EdgeBToA;
-    createEdgeNode(nodeB->id);
-    EdgeAToB = foundEdge;
-    createEdgeNode(nodeA->id);
-    EdgeBToA = foundEdge;
-    if (EdgeAToB == NULL || EdgeBToA == NULL)
-      return false;
-    edgeInit(nodeA,EdgeAToB);
-    edgeInit(nodeB,EdgeBToA);
-    
-    EdgeAToB->timer = timer;
-    EdgeAToB->turn = turntoB;
-    
-    EdgeBToA->timer = timer;
-    EdgeBToA->turn = turntoA;
-    
-    return true;
-}
-
-/*
-    Place the edgeNode to the end of the list containing all the edges
-    from the given vertex node.    
-*/
-void edgeInit(vertexNode *vnode, edgeNode *enode){
-
-    if(vnode->head == NULL){
-      vnode->head = enode;
-      vnode->tail = vnode->head;
-      }
-    else{
-      vnode->tail->next = enode;
-      vnode->tail = enode;
-    }
-    vnode->tail->next = NULL;
-
-}
-/* 
-    @author Shallav 
     Deletes a node from graph
     First deletes all the edges emitting from node, then deletes the node.
 */
     
-void deleteVertexNode ( vertexNode* nodeA)
+void deleteNode (graph * area, node* nodeA)
 {
-    vertexNode * iter = head;
-    vertexNode * temp = head;
+    node * iter = area -> head -> next;
+    node * temp = area -> head -> next;
     
     if (nodeA == NULL)
     {
         return;
     }
-    //printf("Head ID: %d\n",iter -> id);
     while (iter)
     {
-    	printf("ID: %d\n",iter -> id); 
         if (iter == nodeA)
         {
-            edgeNode * head = nodeA -> head;
-            edgeNode *delNode;
-            while(head -> next)
-            {
-            	delNode = head -> next; 
-            	head -> next = delNode -> next;
-            	free(delNode);
-            	//printf("NotReached\n"); 
-            }	
-            free(head);
-            nodeA -> tail = NULL;       
+            clearSet_graph(&(iter -> edges));   
         }
         else
         {
@@ -159,123 +155,47 @@ void deleteVertexNode ( vertexNode* nodeA)
         	{
         		temp = iter;
         	}
-        	searchEdge(iter,nodeA -> id);
-        	if (foundEdge)
-        	{   printf("Searched Vertex Node %d\n",iter->id);
-        		deleteEdgeAtoB(iter, nodeA);
-        	}
+            edge * temp2 = findEdge_graph(iter -> edges,nodeA);
+            if (setContains_graph(iter -> edges, temp2))
+            {
+                removeNodeFromSet_graph(&(iter -> edges), nodeA);
+            }
         }
         iter = iter -> next;
     }    
     temp -> next = nodeA -> next;
     free(nodeA);
-    printf("Done.\n");
+    //printf("Done.\n");
 }
 
 /*
-    Searches if the edge exists between given node and the node with the given ID.
-*/  
-void searchEdge(vertexNode* vnode, int id){
-	 foundEdge = vnode->head;
-	 //printf("%p\n",foundEdge);
-	 //printf("%d\t%d",foundEdge->id, id);
-	while(foundEdge){
-		if(foundEdge->id == id)
-			return ;
-		foundEdge = foundEdge->next;
-	}
-	
-}
-
-/*
-    @author Utsav 
-    Deletes edge between two vertex nodes.
+    Deletes edge between two nodes.
 */ 
-void deleteEdge(vertexNode* nodeA ,vertexNode* nodeB){
-    deleteEdgeAtoB(nodeA, nodeB);
-    deleteEdgeAtoB(nodeB, nodeA);
+void deleteEdge(graph * area, node* end1 ,node* end2){
+    edge* temp = findEdge_graph(end1 -> edges, end2);
+    deleteEdgeAtoB(end1, temp );
+    temp = findEdge_graph(end2 -> edges, end1);
+    deleteEdgeAtoB(end2, temp);
 }
 
 /*
-    @author Utsav 
-    Deletes a unidirectional edge  from vertexNode A to vertexNode B.
+    Deletes a unidirectional edge  from node A to node B.
 */ 
-void deleteEdgeAtoB(vertexNode* nodeA, vertexNode* nodeB){
-    edgeNode  * temp;
-    edgeNode * currentNode;
-    currentNode = nodeA->head;
-    
-    if (nodeA->head->id == nodeB->id){
-    	temp = nodeA->head;
-    	nodeA->head = temp->next;
-    	free(temp);
-    	return;
-    }
-      
-    while(currentNode!= nodeA->tail)
-    {
-    	temp = currentNode;
-    	if(currentNode->next->id == nodeB->id){
-            temp = currentNode->next;
-            currentNode->next = temp->next;
-            free(temp);
-            return;
+void deleteEdgeAtoB(node* nodeA, edge* end){
+    if (setContains_graph(nodeA -> edges, end))
+        {
+            removeNodeFromSet_graph(&(nodeA -> edges), end -> dest);
         }
-        currentNode = currentNode -> next;
-    }   
-    if(currentNode->id == nodeB->id)
-    {
-      	free(currentNode);
-      	nodeA->tail = temp;      
-    } 	
-}
-
-/*
-    @author Shallav
-    Creates an edge with given node ID.
-*/
-void createEdgeNode (int id)
-{
-    n = (edgeNode *)malloc(sizeof(edgeNode));
-    if ( n != NULL)
-    {
-        n -> id = id;
-    }
-   foundEdge = n;
-}
-
-/*
-    @author Shallav
-    Creates a node.
-    Returns true if node created successfully, false otherwise.
-*/ 
-bool createVertexNode ()
-{
-    vertexNode *n = (vertexNode *)malloc(sizeof(vertexNode));
-    if (n == NULL)
-    {
-        return false;
-    }
-    else
-    {    
-        n -> id = ASSIGN_ID();
-        n -> head = NULL;
-        n -> tail = NULL;
-        n -> next = NULL;
-        tail -> next = n;
-        tail = n;
-  		
-        return true;
-    }
+	
 }
 
 /*
     Print the list of all the nodes in the graph.
 */
-void printList ()
+void printList (graph * area)
 {
-vertexNode * iter;
-iter = head;
+node * iter;
+iter = area -> head;
 while (iter)
 {
 	printf("%p\t",iter);
@@ -288,17 +208,42 @@ printf("%p\t",iter);
 /*
     Print the graph structure.    
 */
-void print(){
-	vertexNode *vertical = head;
-	edgeNode *horizontal ; 
+void print(graph * area){
+	node *vertical = area -> head -> next;
 	while(vertical){
-		printf("%d\t",vertical->id);
-		horizontal = vertical->head;
-		while(horizontal){
-			printf("%d\t",horizontal->id);
-			horizontal = horizontal->next;
-		}
+		printf("%d\t",vertical -> id);
+		listSet_graph(vertical -> edges);
 		vertical = vertical->next;
 		printf("\n");
 	}
 }
+
+
+/*
+int main()
+{
+    int i = 0;
+    //printf("%lu",sizeof(area.head));
+    graphInit(&area);
+    while(i < 6)
+    {
+        addNode(&area);
+        i++;
+    }
+    addEdge(&area, 0, 2, 10, Straight);
+    addEdge(&area, 1, 2, 10, Straight);
+    addEdge(&area, 1, 3, 10, Straight);
+    addEdge(&area, 2, 4, 10, Straight);
+    addEdge(&area, 2, 6, 10, Straight);
+    addEdge(&area, 4, 5, 10, Straight);
+    addEdge(&area, 3, 6, 10, Straight);
+    print(&area);
+    printf("Node found: %d\n", findNode(&area,6) -> id);
+    deleteNode(&area, findNode(&area,6));
+    print(&area);
+    printf("\n");
+    deleteEdge(&area, findNode(&area,2),findNode(&area,4));
+    print(&area);
+    return 0;
+}
+*/

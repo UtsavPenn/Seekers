@@ -46,4 +46,7 @@ bool isStackEmpty(stack * stackHead){
 	return false;
 }
 
-
+void clearStack(stack * stackHead)
+{
+	initStack(stackHead);
+}

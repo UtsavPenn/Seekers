@@ -4,130 +4,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-/*    
-    Orientation gives the direction of motion of the bot
-    with respect to reference. 
-*/
-typedef enum{
-  Straight,
-  Right,
-  Back,
-  Left
-} orientation;
+#include "setGraph.h"
 
 /*
-Represents an edge between two nodes in the graph. For each node in the graph there is a list of edgeNodes which represent the nodes directly connected with that particular node.
+    Initializes a graph object.
 */
-struct edgeNode {
-  struct edgeNode * next; //pointer to the next node connected to the vertexNode 
-  int id;                           //id of the node to which the vertexNode is connected to 
-  int timer;                 //distance  from the node to the vertexNode 
-  orientation turn;            //orientation of the node wrt the vertexNode
-};
-
-/*
-		    It  represents all the nodes in my graph structure.
-*/ 
-struct vertexNode {
-int id;    //  used for identification of the node.
-struct edgeNode *head,*tail;    // Head and tail of the list of nodes to which a particular
-                                          // node is connected to in graph.
-struct vertexNode *next; // Pointer to the next vertex node
-};
-
-typedef struct edgeNode edgeNode;
-typedef struct vertexNode vertexNode;
+void graphInit(graph *);
 
 /*
     Allocates a new node  in the graph.
-    @return
-    True if memory allocated successfully, false otherwise.
 */
-bool createVertexNode();
-
-/*
-    Allocates an edge node.
-    @param
-     ID of new node.
-*/
-void createEdgeNode(int);
-
-/* 
-deletes an edge from node A to B. 
-Note: it only deletes the edge from A to B not from B to A
-*/ 
-void deleteEdgeAtoB(vertexNode *, vertexNode *);
-
-/*
-Completely deletes the edge from node A to node B i.e both from A to B and B to A.
-*/
-void deleteEdge(vertexNode *, vertexNode *);
-
-/*
-    Deletes the vertex node and all its edges from the graph.
-    @param
-    Pointer to vertex node which is to be deleted
-*/
-void deleteVertexNode(vertexNode *);
+void addNode(graph *);
 
 /*
     Adds an edge between two nodes.
     @param: 
-    vertexNode 1 ,vertexNode2 ,orietntation of vertexNode 1 wrt vertexNode 2,orietntation of      vertexNode 2 wrt vertexNode 1
-    Returns true if the adge is succesfully added and false otherwise.
+    IDs of the node between which edge is to be added, 
+    timer value and direction of going from argument 2 node to argument 3 node.
 */
-bool addEdge(vertexNode *,vertexNode *, float, orientation, orientation);
+void addEdge(graph * area, int nodeId1, int nodeId2, int timer,orientation direction );
 
 /*
-    Searches a vertex node. 
-    This method is used internally by graph.c when no return value is expected.
+    Malloc an edge and return pointer to it.
+*/
+edge * createEdge ();
+
+/* 
+    Deletes an edge from node A to B.
+    Note: it only deletes the edge from A to B not from B to A
+*/ 
+void deleteEdgeAtoB(node *, edge *);
+
+/*
+Completely deletes the edge from node A to node B i.e both from A to B and B to A.
+*/
+void deleteEdge(graph *, node *, node *);
+
+/*
+    Deletes the node and all its edges from the graph.
     @param
-    ID of the node to be searched.
-    
+    Pointer to node which is to be deleted
 */
-void search(int);
+void deleteNode(graph *, node *);
+
 
 /*
-    Searches a vertex node.
-    This method is called by other files in project when a pointer return type is expected.
+    Look for a node with given ID and return pointer to it.
     @param
     ID of the node to be searched.
     @return
     Pointer to the vertex node if found, else NULL.
 */
-vertexNode* searchNode(int );
+node* findNode(graph *, int );
 
 /*
-    Searches an edge between a vertexNode to another node in the list of edgeNodes corresponding to a vertexNode.
-    @param
-    vertexNode whose edges have to be searched.
-    id of the edgeNode to be searched.
+  Prints out the entire graph with all the nodes
+  along side the nodes that are directly connected to it.
 */
-void searchEdge(vertexNode*, int );
+void print(graph*);
 
 /*
-   allocates the first node in the graph and initialises its ID to 0
+    Print the list of nodes int the graph.
 */
-void init();
+void printlist(graph*);
 
-/*
-  prints out the entire graph with all the nodes along side the nodes that are directly connected to it.
-*/
-void print();
-
-/*
-  Adds an edgenode to the list of edgeNodes of a vertexNode
-  @param 
-  vertexNode whose edgeNode list needs to be updated.
-  edgeNode which needs to be added to the list.
-*/
-void edgeInit(vertexNode *, edgeNode *);
-
-/*
-vertexNode *head;  // head of the vertexNode List
-vertexNode *tail;  // tail of the vertexNode List
-vertexNode *foundNode;
-edgeNode *foundEdge; //found edgeNode
-*/
 
