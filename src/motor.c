@@ -156,36 +156,4 @@ void orient(bot* car)
       }
 }
 
-/*
-  Bot moves in the given direction for a given amount of time.  
-*/
-void moveCar(bot car, orientation direction, int timer){
-  // Pre - condition: Bot can face in any direction.
-  orient(); 
-  // Bot faces in the reference direction here.
-  switch(direction){
-  	case Straight:
-  	  car.driveStraight(timer);
-  	break;
-  	case Right:
-  	  car.turnRight();
-	driveStraight(timer);
-  	break;
-  	case Left:
-  	  car.turnLeft();
-	  car.driveStraight(timer);
-  	break;
-	case Back:
-		car.turnRight();
-		sleep(1);
-		car.turnRight();
-		car.driveStraight(timer);
-		break;
-  	default:
-  	  car.motorright.duty = 7.25;
-  	  car.motorleft.duty = 7.25;
-  	  break; 
-  }
-  return ;
-}
 
