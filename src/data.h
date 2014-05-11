@@ -35,11 +35,11 @@ typedef struct edge{
 
 typedef struct graph{
     // Function pointers that define methods that can be aplied to the graph object.
-    void (*addNode)(void *self);
-    void (*addEdge)(void *self, int, int, int, orientation);
-    void (*deleteEdge)(void *self, node*, node*);
-    void (*deleteNode)(void *self, node*);
-    node* (*findNode)(void *self, int);
+    void (*addNode)(struct graph *self);
+    void (*addEdge)(struct graph *self, int, int, int, orientation);
+    void (*deleteEdge)(struct graph *self, node*, node*);
+    void (*deleteNode)(struct graph *self, node*);
+    node* (*findNode)(struct graph *self, int);
     
     // And data goes here.
     node * head;
