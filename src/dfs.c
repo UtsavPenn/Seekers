@@ -190,7 +190,7 @@ void moveToNextNode(int currentNodeID ,int nextNodeID)    //Decides on which  no
         temp_head = temp_head->next;
     }   
 
-    robot->moveCar(direction, distanceToNextNode);
+    robot.moveCar(direction, distanceToNextNode);
     lastTurn  = direction;
     printf("Node explored : %d \n", currentNodeID);
 
