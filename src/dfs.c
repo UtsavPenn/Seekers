@@ -5,7 +5,9 @@
 
 
 extern bool objectFound;               //From opencv
-extern graph area;
+graph area;
+bot robot;
+motor_init(&robot);
 
 orientation currentOrientation;                          
 orientation lastPostionSeen = Straight;     
@@ -18,6 +20,38 @@ static set* markedNodes;   // Set for storing nodes visited
 static set* frontierNodes; // Set for storing frontier nodes to be explored
 static stack spine;        // Spine for storing node IDs
 
+/*
+ It creates the graph structure using Graph API.
+ */
+void run ()
+{
+	lastTurn = Straight;
+    int i = 0;
+    // Creates a linked list with number of nodes = number of times the loop executes.
+    
+    graphInit(&area);
+    while(i < 9)
+    {
+        area.addNode(&area);
+        i++;
+    }
+    // Adding edges between various nodes of graph.
+    area.addEdge(&area, 0, 1, 3, Right);
+    area.addEdge(&area, 1, 2, 3, Right);
+    area.addEdge(&area, 2, 5, 3, Straight);
+    area.addEdge(&area, 5, 4, 3, Left);
+    area.addEdge(&area, 4, 3, 3, Left);
+    area.addEdge(&area, 1, 4, 3, Straight);
+    area.addEdge(&area, 0, 3, 3, Straight);
+    area.addEdge(&area, 3, 6, 3, Straight);
+    area.addEdge(&area, 6, 7, 3, Right);
+    area.addEdge(&area, 7, 8, 3, Right);
+    area.addEdge(&area, 4, 7, 3, Straight);
+    area.addEdge(&area, 5, 8, 3, Straight);
+    
+    print(&area);
+    
+}
 
 /**
 @description:
@@ -234,7 +268,7 @@ void startSearch()
     currentOrientation = Straight;
 
     init_Dfs();         //Initialize the stack spine
-    init_motors();      
+    motor_init(&robot);
     run();
 
     int nextNodeID;
