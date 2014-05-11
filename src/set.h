@@ -6,7 +6,6 @@
 
 
 typedef struct node_s{
-=======
 // if nodes are used only in the representation of sets but not exposed to clients,
 // this type should be in set.c
 typedef struct node {
