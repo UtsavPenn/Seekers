@@ -3,7 +3,7 @@
 typedef struct motor{
   int pin;
   float duty;
-  float timer;
+  float ontime;
   }motor;
 
 /*struct which contains the function pointers necessary for the movement of the bot*/
