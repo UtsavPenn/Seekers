@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #define MAXNODES 20
 
-<<<<<<< HEAD
+
 typedef struct node_s{
 =======
 // if nodes are used only in the representation of sets but not exposed to clients,
@@ -19,12 +19,9 @@ typedef struct SET{
 	struct node_s * listHead; //points to the first element of the list
 } set;
 
-<<<<<<< HEAD
 
 
-=======
 // why is this not just a pointer to a set? (similar questions for ** below).
->>>>>>> 7ed6e9cc822f1b46ac311b05c48fd0ab484b303f
 void addToSet(set **, int ID);
 void listSet(set *);
 int removeNodeFromSet(set **,int ID);
