@@ -1,38 +1,48 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
-#define MAXNODES 20
+#define MAXNODES 10
 
+typedef struct Set{
 
-typedef struct node_s{
-// if nodes are used only in the representation of sets but not exposed to clients,
-// this type should be in set.c
-typedef struct node {
-	int ID;
-	struct node_s * next; // a pointer to the next node
-} graph_node;
+	struct List * listHead; //points to the first element of the list
+	
+} Set;
 
-typedef struct SET{
-	struct node_s * listHead; //points to the first element of the list
-} set;
+/**
+* adds the element to the set
+* @param- pointer to pointer to the first element of set, node ID
+*/
+void addToSet(Set **, int ID);
 
+/**
+* prints out the list of nodes in the set
+* @param- pointer to first element of set
+*/
+void listSet(Set *);
 
+/**
+* removes given element from the set
+* @param- pointer to pointer to first element of set, node ID
+*/
+int removeNodeFromSet(Set **,int ID);
 
-// why is this not just a pointer to a set? (similar questions for ** below).
-void addToSet(set **, int ID);
-void listSet(set *);
-int removeNodeFromSet(set **,int ID);
-// sets shouldn't know about graphs; move graph functions to the graph type
-void addToLinkedList(set **, graph_node *,int ID);
-void listLinkedList(graph_node *);
-bool setContains(set *, int ID);
-void clearSet(set **);
+/**
+ *returns true if the set contains the given ID
+ * 			false otherwise
+ * @param- node ID, pointer to first element of the set
+ */
+bool setContains(Set *, int ID);
 
-int removeNodeFromList(set **, graph_node *, int ID);
-graph_node * searchNodeInLinkedList(graph_node *, int ID);
-int sizeOfLinkedList(graph_node *);
-int isLinkedListEmpty(graph_node *);
-int isSetEmpty(set *);
-bool listContains(graph_node *, int ID);
-void clearLinkedList(set ** ,graph_node *);
+/**
+ * clears the set
+ * @param pointer to first element of the set
+ */
+
+void clearSet(Set **);
+
+/**
+* returns 1 if the list is empty
+* 		  0 otherwise
+* @param - pointer to first element of the set
+*/
+int isSetEmpty(Set *);
+
