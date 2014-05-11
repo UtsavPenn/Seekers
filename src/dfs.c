@@ -226,6 +226,10 @@ int checkIfNeighborExistsInFrontier(int nodeID)
 }
 
 
+/**
+ * @description:
+ * 	Finds the next node to be traversed
+ */
 
 
 
@@ -255,7 +259,10 @@ int findNextNode(orientation currentOrienation, int nodeID)
       return foundID;
 }
 
-
+/**
+ * @description:
+ * 	Thread for starting the search
+ */
 void startSearch()
 {
     bool flag;
