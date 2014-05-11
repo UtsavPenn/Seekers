@@ -10,7 +10,6 @@ typedef struct node_s{
 // if nodes are used only in the representation of sets but not exposed to clients,
 // this type should be in set.c
 typedef struct node {
->>>>>>> 7ed6e9cc822f1b46ac311b05c48fd0ab484b303f
 	int ID;
 	struct node_s * next; // a pointer to the next node
 } graph_node;
